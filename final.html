@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>老照片修复 - 小耕AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            height: 100vh;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .page.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== 主页面 ===== */
+        .main-page {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            padding-bottom: 100px;
+            position: relative;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .welcome-text h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .welcome-text p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .feature-item {
+            background: white;
+            padding: 20px 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .feature-text {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* ===== Action Bar - 固定在底部 ===== */
+        .action-bar-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 10px 16px;
+            padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        .action-bar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+            border: 2px solid #FF6B6B;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .action-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .action-bar:hover::before {
+            left: 100%;
+        }
+
+        .action-bar:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+        }
+
+        .action-bar-icon {
+            font-size: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-bar-text {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== 上传页面 ===== */
+        .upload-page {
+            padding: 20px;
+            padding-bottom: 100px;
+            background: #fafafa;
+        }
+
+        .upload-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0 20px;
+        }
+
+        .upload-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 5px;
+        }
+
+        .demo-area {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(90deg, #ddd 0%, #ddd 50%, #bbb 50%, #bbb 100%);
+            border-radius: 16px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-label {
+            position: absolute;
+            bottom: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .demo-label.before {
+            left: 12px;
+        }
+
+        .demo-label.after {
+            right: 12px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 16px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:active {
+            background: #f5f5f5;
+        }
+
+        /* ===== 处理页面 ===== */
+        .processing-page {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        .processing-animation {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .processing-image {
+            width: 240px;
+            height: 240px;
+            border-radius: 16px;
+            object-fit: cover;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .processing-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: sweep 2s infinite;
+            border-radius: 16px;
+        }
+
+        @keyframes sweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .processing-text {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 240px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 3px;
+        }
+
+        .progress-text {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* ===== 结果页面 ===== */
+        .result-page {
+            padding: 20px;
+            padding-bottom: 100px;
+            background: #fafafa;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0 20px;
+        }
+
+        .result-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .comparison-container {
+            width: 100%;
+            height: 320px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            position: relative;
+            background: #f0f0f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .comparison-before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .comparison-before img {
+            width: 200%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .comparison-slider {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: white;
+            cursor: col-resize;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        .comparison-slider::before {
+            content: '⬌';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .comparison-hint {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            animation: fadeOut 3s forwards;
+            z-index: 5;
+        }
+
+        @keyframes fadeOut {
+            0%, 70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast.show {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* ===== 响应式 ===== */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 414px;
+                margin: 0 auto;
+                box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 主页面 -->
+        <div class="page main-page active" id="mainPage">
+            <div class="main-content">
+                <div class="logo">📸✨</div>
+                <div class="welcome-text">
+                    <h2>小耕AI 老照片修复</h2>
+                    <p>让模糊的回忆变得清晰</p>
+                </div>
+                
+                <div class="features">
+                    <div class="feature-item">
+                        <div class="feature-icon">🎨</div>
+                        <div class="feature-text">智能修复</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">⚡</div>
+                        <div class="feature-text">快速处理</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🎯</div>
+                        <div class="feature-text">高清还原</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💾</div>
+                        <div class="feature-text">一键保存</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 上传页面 -->
+        <div class="page upload-page" id="uploadPage">
+            <div class="upload-header">
+                <div class="upload-title">上传老照片</div>
+                <button class="back-btn" onclick="showPage('main')">✕</button>
+            </div>
+            
+            <div class="demo-area">
+                <div class="demo-label before">修复前</div>
+                <div class="demo-label after">修复后</div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="selectFromAlbum()">
+                    <span>🖼️</span>
+                    <span>从手机相册里选</span>
+                </button>
+                <button class="btn btn-primary" onclick="takePhoto()">
+                    <span>📷</span>
+                    <span>对着老照片拍一张</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 处理页面 -->
+        <div class="page processing-page" id="processingPage">
+            <div class="processing-animation">
+                <img id="processingImage" class="processing-image" src="" alt="处理中">
+                <div class="processing-overlay"></div>
+            </div>
+            <div class="processing-text">小耕帮你修照片中...</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">0%</div>
+        </div>
+
+        <!-- 结果页面 -->
+        <div class="page result-page" id="resultPage">
+            <div class="result-header">
+                <div class="result-title">修复完成 ✨</div>
+                <button class="back-btn" onclick="showPage('main')">✕</button>
+            </div>
+            
+            <div class="comparison-container" id="comparisonContainer">
+                <img id="afterImage" class="comparison-image" src="" alt="修复后">
+                <div class="comparison-before" id="comparisonBefore">
+                    <img id="beforeImage" src="" alt="修复前">
+                </div>
+                <div class="comparison-slider" id="comparisonSlider"></div>
+                <div class="comparison-hint">👆 左右滑动查看效果</div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="shareToCircle()">
+                    <span>🌟</span>
+                    <span>发到村友圈</span>
+                </button>
+                <button class="btn btn-secondary" onclick="saveToAlbum()">
+                    <span>💾</span>
+                    <span>保存到手机相册</span>
+                </button>
+                <button class="btn btn-secondary" onclick="showPage('upload')">
+                    <span>🔄</span>
+                    <span>再来一张</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Bar - 固定在底部 -->
+    <div class="action-bar-container" id="actionBarContainer">
+        <div class="action-bar" onclick="showPage('upload')">
+            <span class="action-bar-icon">📸✨</span>
+            <span class="action-bar-text">老照片变清晰</span>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let selectedImage = null;
+        let processedImage = null;
+
+        // 显示页面
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageName + 'Page').classList.add('active');
+            
+            // 在上传和结果页面隐藏 Action Bar
+            const actionBar = document.getElementById('actionBarContainer');
+            if (pageName === 'upload' || pageName === 'result' || pageName === 'processing') {
+                actionBar.style.display = 'none';
+            } else {
+                actionBar.style.display = 'block';
+            }
+        }
+
+        // 显示提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // 从相册选择
+        function selectFromAlbum() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        selectedImage = event.target.result;
+                        startProcessing();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        // 拍照
+        function takePhoto() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.capture = 'environment';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        selectedImage = event.target.result;
+                        startProcessing();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        // 开始处理
+        function startProcessing() {
+            showPage('processing');
+            document.getElementById('processingImage').src = selectedImage;
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15 + 5;
+                if (progress > 100) progress = 100;
+                
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('progressText').textContent = Math.floor(progress) + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        processImage();
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        // 处理图片
+        function processImage() {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                
+                // 应用滤镜
+                ctx.filter = 'contrast(1.2) brightness(1.1) saturate(1.1)';
+                ctx.drawImage(img, 0, 0);
+                
+                // 添加水印
+                ctx.filter = 'none';
+                ctx.font = '20px Arial';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.textAlign = 'right';
+                ctx.fillText('小耕AI生成', canvas.width - 10, canvas.height - 10);
+                
+                processedImage = canvas.toDataURL('image/jpeg', 0.95);
+                
+                // 显示结果
+                document.getElementById('beforeImage').src = selectedImage;
+                document.getElementById('afterImage').src = processedImage;
+                
+                showPage('result');
+                initComparison();
+            };
+            img.src = selectedImage;
+        }
+
+        // 初始化对比滑块
+        function initComparison() {
+            const container = document.getElementById('comparisonContainer');
+            const slider = document.getElementById('comparisonSlider');
+            const before = document.getElementById('comparisonBefore');
+            let isSliding = false;
+
+            function updatePosition(clientX) {
+                const rect = container.getBoundingClientRect();
+                let x = clientX - rect.left;
+                if (x < 0) x = 0;
+                if (x > rect.width) x = rect.width;
+                
+                const percentage = (x / rect.width) * 100;
+                slider.style.left = percentage + '%';
+                before.style.width = percentage + '%';
+            }
+
+            slider.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                isSliding = true;
+            });
+            
+            document.addEventListener('mouseup', () => isSliding = false);
+            
+            document.addEventListener('mousemove', (e) => {
+                if (isSliding) {
+                    e.preventDefault();
+                    updatePosition(e.clientX);
+                }
+            });
+
+            slider.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                isSliding = true;
+            });
+            
+            document.addEventListener('touchend', () => isSliding = false);
+            
+            document.addEventListener('touchmove', (e) => {
+                if (isSliding) {
+                    e.preventDefault();
+                    updatePosition(e.touches[0].clientX);
+                }
+            });
+
+            container.addEventListener('click', (e) => {
+                if (e.target !== slider && !e.target.closest('.comparison-slider')) {
+                    updatePosition(e.clientX);
+                }
+            });
+        }
+
+        // 分享到村友圈
+        function shareToCircle() {
+            const text = '#小耕修老照片# 看看小耕帮我修的这张老照片，是不是真清楚！';
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('已复制分享文案！');
+                }).catch(() => {
+                    showToast('分享文案：' + text);
+                });
+            } else {
+                showToast('分享文案：' + text);
+            }
+            
+            setTimeout(() => {
+                const confirmed = confirm('即将跳转到发布动态页面\n\n预设文案：\n' + text + '\n\n修复后的照片将自动添加到发布器中');
+                if (confirmed) {
+                    showToast('跳转到发布页面...');
+                }
+            }, 500);
+        }
+
+        // 保存到相册
+        function saveToAlbum() {
+            if (processedImage) {
+                const link = document.createElement('a');
+                link.download = `小耕修复照片_${Date.now()}.jpg`;
+                link.href = processedImage;
+                link.click();
+                showToast('照片存好啦，去相册里看吧！');
+            } else {
+                showToast('图片处理中，请稍候...');
+            }
+        }
+
+        // 初始化
+        console.log('✅ 老照片修复工具已加载');
+        console.log('📱 点击底部"老照片变清晰"开始使用');
+    </script>
+</body>
+</html>
