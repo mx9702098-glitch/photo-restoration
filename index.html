@@ -197,6 +197,64 @@
             transition: all 0.2s;
             box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
             border: 2px solid #FF6B6B;
+            position: relative;
+        }
+
+        /* Action Bar 红点提示 */
+        .action-bar-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 12px;
+            height: 12px;
+            background: #FF4444;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+            display: none;
+        }
+
+        .action-bar-badge.show {
+            display: block;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* 小耕气泡提示 */
+        .header-notification {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 16px;
+            height: 16px;
+            background: #FF4444;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+            display: none;
+        }
+
+        .header-notification.show {
+            display: block;
+        }
+
+        .header-right {
+            font-size: 24px;
+            cursor: pointer;
+            position: relative;
         }
 
         .action-bar:active {
@@ -516,6 +574,281 @@
             display: none;
         }
 
+        /* 拍照页面 */
+        .camera-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 250;
+            flex-direction: column;
+        }
+
+        .camera-page.active {
+            display: flex;
+        }
+
+        .camera-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+
+        .camera-back {
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        .camera-back:active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .camera-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .camera-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .camera-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .camera-canvas {
+            display: none;
+        }
+
+        .camera-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px 20px;
+            padding-bottom: calc(30px + env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .camera-capture-btn {
+            width: 80px;
+            height: 80px;
+            border: 4px solid white;
+            border-radius: 50%;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .camera-capture-btn:active {
+            transform: scale(0.95);
+        }
+
+        .camera-capture-btn::before {
+            content: '';
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .camera-capture-btn:active::before {
+            background: #f0f0f0;
+        }
+
+        .camera-hint {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.4;
+            max-width: 300px;
+        }
+
+        /* 裁剪页面 */
+        .crop-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 250;
+            flex-direction: column;
+        }
+
+        .crop-page.active {
+            display: flex;
+        }
+
+        .crop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+
+        .crop-cancel {
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        .crop-cancel:active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .crop-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .crop-done {
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px 16px;
+            background: #5B7FFF;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        .crop-done:active {
+            background: #4A6FEF;
+        }
+
+        .crop-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .crop-image-container {
+            position: relative;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .crop-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .crop-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+
+        .crop-selection {
+            position: absolute;
+            border: 2px solid #5B7FFF;
+            background: transparent;
+            cursor: move;
+            min-width: 100px;
+            min-height: 100px;
+        }
+
+        .crop-handle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #5B7FFF;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .crop-handle.nw { top: -10px; left: -10px; cursor: nw-resize; }
+        .crop-handle.ne { top: -10px; right: -10px; cursor: ne-resize; }
+        .crop-handle.sw { bottom: -10px; left: -10px; cursor: sw-resize; }
+        .crop-handle.se { bottom: -10px; right: -10px; cursor: se-resize; }
+        .crop-handle.n { top: -10px; left: 50%; transform: translateX(-50%); cursor: n-resize; }
+        .crop-handle.s { bottom: -10px; left: 50%; transform: translateX(-50%); cursor: s-resize; }
+        .crop-handle.w { top: 50%; left: -10px; transform: translateY(-50%); cursor: w-resize; }
+        .crop-handle.e { top: 50%; right: -10px; transform: translateY(-50%); cursor: e-resize; }
+
+        .crop-tools {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            gap: 30px;
+        }
+
+        .crop-tool {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        .crop-tool:active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .crop-tool-icon {
+            font-size: 24px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+        }
+
+        .crop-tool-text {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
         /* 发布页面 */
         .publish-page {
             display: none;
@@ -776,7 +1109,10 @@
                 <span class="menu-icon">☰</span>
                 <span class="header-title">道义</span>
             </div>
-            <div class="header-right">⚙️</div>
+            <div class="header-right" onclick="openSettings()">
+                ⚙️
+                <div class="header-notification" id="headerNotification"></div>
+            </div>
         </div>
 
         <!-- 聊天区域 -->
@@ -791,9 +1127,10 @@
 
     <!-- Action Bar -->
     <div class="action-bar-container">
-        <div class="action-bar" onclick="openUpload()">
+        <div class="action-bar" onclick="openUploadWithNotificationClear()">
             <span class="action-bar-icon">📸✨</span>
             <span class="action-bar-text">老照片变清晰</span>
+            <div class="action-bar-badge" id="actionBarBadge"></div>
         </div>
     </div>
 
@@ -811,6 +1148,58 @@
                 <button class="upload-btn secondary" onclick="takePhoto()">
                     📷 对着老照片拍一张
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 拍照页面 -->
+    <div class="camera-page" id="cameraPage">
+        <div class="camera-header">
+            <span class="camera-back" onclick="closeCameraPage()">取消</span>
+            <span class="camera-title">拍照</span>
+            <span style="width: 60px;"></span>
+        </div>
+        <div class="camera-container">
+            <video id="cameraVideo" class="camera-video" autoplay playsinline></video>
+            <canvas id="cameraCanvas" class="camera-canvas"></canvas>
+            <div class="camera-controls">
+                <div class="camera-capture-btn" onclick="capturePhoto()"></div>
+                <div class="camera-hint">选择人像清晰、无大面积遮挡的照片，效果会更好哦</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 裁剪页面 -->
+    <div class="crop-page" id="cropPage">
+        <div class="crop-header">
+            <span class="crop-cancel" onclick="cancelCrop()">取消</span>
+            <span class="crop-title">裁剪照片</span>
+            <span class="crop-done" onclick="finishCrop()">完成</span>
+        </div>
+        <div class="crop-container" id="cropContainer">
+            <div class="crop-image-container" id="cropImageContainer">
+                <img src="" alt="待裁剪图片" class="crop-image" id="cropImage">
+                <div class="crop-overlay" id="cropOverlay"></div>
+                <div class="crop-selection" id="cropSelection">
+                    <div class="crop-handle nw"></div>
+                    <div class="crop-handle ne"></div>
+                    <div class="crop-handle sw"></div>
+                    <div class="crop-handle se"></div>
+                    <div class="crop-handle n"></div>
+                    <div class="crop-handle s"></div>
+                    <div class="crop-handle w"></div>
+                    <div class="crop-handle e"></div>
+                </div>
+            </div>
+        </div>
+        <div class="crop-tools">
+            <div class="crop-tool" onclick="rotateCropImage()">
+                <div class="crop-tool-icon">🔄</div>
+                <div class="crop-tool-text">旋转</div>
+            </div>
+            <div class="crop-tool" onclick="retakePhoto()" id="retakeBtn" style="display: none;">
+                <div class="crop-tool-icon">📷</div>
+                <div class="crop-tool-text">重拍</div>
             </div>
         </div>
     </div>
@@ -899,6 +1288,21 @@
     <script>
         let originalImage = null;
         let processedImage = null;
+        
+        // 后台处理状态管理
+        const STORAGE_KEYS = {
+            PROCESSING_STATE: 'xiaogeng_processing_state',
+            CHAT_HISTORY: 'xiaogeng_chat_history',
+            NOTIFICATION_STATE: 'xiaogeng_notification_state'
+        };
+        
+        // 处理状态枚举
+        const PROCESSING_STATUS = {
+            IDLE: 'idle',
+            PROCESSING: 'processing',
+            COMPLETED: 'completed',
+            ERROR: 'error'
+        };
 
         // 打开上传模态框
         function openUpload() {
@@ -920,7 +1324,7 @@
 
         // 拍照
         function takePhoto() {
-            document.getElementById('cameraInput').click();
+            openCameraPage();
         }
 
         // 处理文件选择
@@ -931,7 +1335,8 @@
                 reader.onload = (e) => {
                     originalImage = e.target.result;
                     document.getElementById('uploadModal').classList.remove('active');
-                    startProcessing();
+                    // 直接进入裁剪页面
+                    openCropPage();
                 };
                 reader.readAsDataURL(file);
             }
@@ -940,6 +1345,15 @@
         // 开始处理
         function startProcessing() {
             const chatArea = document.getElementById('chatArea');
+            
+            // 保存处理状态到本地存储
+            const processingData = {
+                status: PROCESSING_STATUS.PROCESSING,
+                originalImage: originalImage,
+                startTime: Date.now(),
+                progress: 0
+            };
+            localStorage.setItem(STORAGE_KEYS.PROCESSING_STATE, JSON.stringify(processingData));
             
             // 添加用户消息
             const userMsg = document.createElement('div');
@@ -958,6 +1372,9 @@
                 `;
                 chatArea.appendChild(userPhoto);
                 chatArea.scrollTop = chatArea.scrollHeight;
+                
+                // 保存聊天历史
+                saveChatHistory();
             }, 300);
 
             // 添加处理中卡片
@@ -974,6 +1391,9 @@
                 `;
                 chatArea.appendChild(processingCard);
                 chatArea.scrollTop = chatArea.scrollHeight;
+                
+                // 保存聊天历史
+                saveChatHistory();
 
                 // 开始进度动画
                 simulateProcessing();
@@ -990,6 +1410,11 @@
                 if (progress > 100) progress = 100;
                 
                 percentageEl.textContent = Math.floor(progress) + '%';
+                
+                // 更新本地存储中的进度
+                const processingData = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROCESSING_STATE) || '{}');
+                processingData.progress = Math.floor(progress);
+                localStorage.setItem(STORAGE_KEYS.PROCESSING_STATE, JSON.stringify(processingData));
                 
                 if (progress >= 100) {
                     clearInterval(interval);
@@ -1052,8 +1477,24 @@
                             <img src="${processedImage}" alt="修复后">
                         </div>
                     `;
+                    // 更新处理状态为完成
+                    const processingData = {
+                        status: PROCESSING_STATUS.COMPLETED,
+                        originalImage: originalImage,
+                        processedImage: processedImage,
+                        completedTime: Date.now(),
+                        progress: 100
+                    };
+                    localStorage.setItem(STORAGE_KEYS.PROCESSING_STATE, JSON.stringify(processingData));
+                    
+                    // 触发通知机制
+                    triggerNotification();
+                    
                     chatArea.appendChild(resultCard);
                     chatArea.scrollTop = chatArea.scrollHeight;
+                    
+                    // 保存聊天历史
+                    saveChatHistory();
                 };
                 img.src = originalImage;
             }, 300);
@@ -1303,11 +1744,12 @@
             }, 300);
         }
 
-        // 显示 Toast
+        // 显示Toast
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.classList.add('show');
+            
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 2000);
@@ -1316,59 +1758,458 @@
         // 创建演示动画
         function createDemoAnimation() {
             const canvas = document.getElementById('demoCanvas');
-            if (!canvas) return;
-            
             const ctx = canvas.getContext('2d');
-            canvas.width = 600;
-            canvas.height = 400;
             
-            let frame = 0;
+            // 设置canvas尺寸
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
             
-            function draw() {
-                const progress = (Math.sin(frame / 30) + 1) / 2;
-                
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                // 修复前（左侧）
-                ctx.save();
-                ctx.filter = 'blur(5px) grayscale(0.5) brightness(0.7)';
-                ctx.fillStyle = '#8B7355';
-                ctx.fillRect(0, 0, canvas.width * (1 - progress), canvas.height);
-                ctx.restore();
-                
-                // 修复后（右侧）
-                const gradient = ctx.createLinearGradient(
-                    canvas.width * (1 - progress), 0,
-                    canvas.width, 0
-                );
-                gradient.addColorStop(0, '#D4A574');
-                gradient.addColorStop(1, '#F5DEB3');
-                ctx.fillStyle = gradient;
-                ctx.fillRect(canvas.width * (1 - progress), 0, canvas.width * progress, canvas.height);
-                
-                // 分隔线
-                ctx.strokeStyle = 'white';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(canvas.width * (1 - progress), 0);
-                ctx.lineTo(canvas.width * (1 - progress), canvas.height);
-                ctx.stroke();
-                
-                frame++;
-                requestAnimationFrame(draw);
-            }
+            // 绘制演示内容
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
             
-            draw();
+            const centerX = canvas.offsetWidth / 2;
+            const centerY = canvas.offsetHeight / 2;
+            
+            ctx.fillText('📸 选择一张老照片', centerX, centerY - 20);
+            ctx.fillText('✨ 小耕帮你变清晰', centerX, centerY + 20);
         }
 
-        // 初始化
-        console.log('🎨 老照片修复工具已加载');
-        console.log('📱 支持功能：');
-        console.log('  - 从相册选择照片');
-        console.log('  - 相机拍摄');
-        console.log('  - 滑动对比查看效果');
-        console.log('  - 保存到本地');
-        console.log('  - 分享到村友圈');
+        // 拍照相关功能
+        let cameraStream = null;
+
+        // 打开拍照页面
+        function openCameraPage() {
+            document.getElementById('uploadModal').classList.remove('active');
+            document.getElementById('cameraPage').classList.add('active');
+            
+            // 启动摄像头
+            navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    facingMode: 'environment' // 优先使用后置摄像头
+                } 
+            })
+            .then(stream => {
+                cameraStream = stream;
+                const video = document.getElementById('cameraVideo');
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error('无法访问摄像头:', err);
+                showToast('无法打开摄像头，请检查权限设置');
+                closeCameraPage();
+            });
+        }
+
+        // 关闭拍照页面
+        function closeCameraPage() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            document.getElementById('cameraPage').classList.remove('active');
+        }
+
+        // 拍照
+        function capturePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 设置canvas尺寸与视频相同
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // 绘制当前视频帧到canvas
+            ctx.drawImage(video, 0, 0);
+            
+            // 获取图片数据
+            originalImage = canvas.toDataURL('image/jpeg', 0.9);
+            
+            // 关闭摄像头
+            closeCameraPage();
+            
+            // 进入裁剪页面
+            setTimeout(() => {
+                openCropPage();
+            }, 300);
+        }
+
+        // 裁剪相关功能
+        let cropData = {
+            rotation: 0,
+            selection: { x: 0, y: 0, width: 0, height: 0 }
+        };
+
+        // 打开裁剪页面
+        function openCropPage() {
+            const cropPage = document.getElementById('cropPage');
+            const cropImage = document.getElementById('cropImage');
+            
+            cropImage.src = originalImage;
+            cropPage.classList.add('active');
+            
+            // 图片加载完成后初始化裁剪选择框
+            cropImage.onload = () => {
+                initCropSelection();
+            };
+        }
+
+        // 初始化裁剪选择框
+        function initCropSelection() {
+            const cropImage = document.getElementById('cropImage');
+            const cropSelection = document.getElementById('cropSelection');
+            const cropContainer = document.getElementById('cropContainer');
+            
+            // 获取图片的显示尺寸和位置
+            const imageRect = cropImage.getBoundingClientRect();
+            const containerRect = cropContainer.getBoundingClientRect();
+            
+            // 计算相对于容器的位置
+            const imageLeft = imageRect.left - containerRect.left;
+            const imageTop = imageRect.top - containerRect.top;
+            
+            // 设置初始选择框（图片的80%区域，居中）
+            const selectionWidth = imageRect.width * 0.8;
+            const selectionHeight = imageRect.height * 0.8;
+            const selectionLeft = imageLeft + (imageRect.width - selectionWidth) / 2;
+            const selectionTop = imageTop + (imageRect.height - selectionHeight) / 2;
+            
+            cropSelection.style.left = selectionLeft + 'px';
+            cropSelection.style.top = selectionTop + 'px';
+            cropSelection.style.width = selectionWidth + 'px';
+            cropSelection.style.height = selectionHeight + 'px';
+            
+            // 添加拖拽功能
+            addCropDragFunctionality();
+        }
+
+        // 添加裁剪拖拽功能
+        function addCropDragFunctionality() {
+            const cropSelection = document.getElementById('cropSelection');
+            const handles = cropSelection.querySelectorAll('.crop-handle');
+            const cropImage = document.getElementById('cropImage');
+            
+            let isDragging = false;
+            let dragType = '';
+            let startX = 0;
+            let startY = 0;
+            let startRect = {};
+            
+            // 获取图片边界
+            function getImageBounds() {
+                const imageRect = cropImage.getBoundingClientRect();
+                const containerRect = document.getElementById('cropContainer').getBoundingClientRect();
+                return {
+                    left: imageRect.left - containerRect.left,
+                    top: imageRect.top - containerRect.top,
+                    right: imageRect.right - containerRect.left,
+                    bottom: imageRect.bottom - containerRect.top
+                };
+            }
+            
+            // 移动选择框
+            cropSelection.addEventListener('mousedown', (e) => {
+                if (e.target.classList.contains('crop-handle')) return;
+                
+                isDragging = true;
+                dragType = 'move';
+                startX = e.clientX;
+                startY = e.clientY;
+                startRect = cropSelection.getBoundingClientRect();
+                e.preventDefault();
+            });
+            
+            // 调整选择框大小
+            handles.forEach(handle => {
+                handle.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    dragType = handle.className.split(' ')[1]; // nw, ne, sw, se, n, s, w, e
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    startRect = cropSelection.getBoundingClientRect();
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            });
+            
+            // 鼠标移动
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+                const imageBounds = getImageBounds();
+                const containerRect = document.getElementById('cropContainer').getBoundingClientRect();
+                
+                let newLeft = startRect.left - containerRect.left;
+                let newTop = startRect.top - containerRect.top;
+                let newWidth = startRect.width;
+                let newHeight = startRect.height;
+                
+                if (dragType === 'move') {
+                    newLeft += deltaX;
+                    newTop += deltaY;
+                    
+                    // 限制在图片范围内
+                    if (newLeft < imageBounds.left) newLeft = imageBounds.left;
+                    if (newTop < imageBounds.top) newTop = imageBounds.top;
+                    if (newLeft + newWidth > imageBounds.right) newLeft = imageBounds.right - newWidth;
+                    if (newTop + newHeight > imageBounds.bottom) newTop = imageBounds.bottom - newHeight;
+                } else {
+                    // 调整大小
+                    if (dragType.includes('w')) {
+                        newLeft += deltaX;
+                        newWidth -= deltaX;
+                    }
+                    if (dragType.includes('e')) {
+                        newWidth += deltaX;
+                    }
+                    if (dragType.includes('n')) {
+                        newTop += deltaY;
+                        newHeight -= deltaY;
+                    }
+                    if (dragType.includes('s')) {
+                        newHeight += deltaY;
+                    }
+                    
+                    // 限制最小尺寸
+                    if (newWidth < 100) {
+                        if (dragType.includes('w')) newLeft = startRect.left - containerRect.left + startRect.width - 100;
+                        newWidth = 100;
+                    }
+                    if (newHeight < 100) {
+                        if (dragType.includes('n')) newTop = startRect.top - containerRect.top + startRect.height - 100;
+                        newHeight = 100;
+                    }
+                    
+                    // 限制在图片范围内
+                    if (newLeft < imageBounds.left) {
+                        newWidth -= imageBounds.left - newLeft;
+                        newLeft = imageBounds.left;
+                    }
+                    if (newTop < imageBounds.top) {
+                        newHeight -= imageBounds.top - newTop;
+                        newTop = imageBounds.top;
+                    }
+                    if (newLeft + newWidth > imageBounds.right) {
+                        newWidth = imageBounds.right - newLeft;
+                    }
+                    if (newTop + newHeight > imageBounds.bottom) {
+                        newHeight = imageBounds.bottom - newTop;
+                    }
+                }
+                
+                cropSelection.style.left = newLeft + 'px';
+                cropSelection.style.top = newTop + 'px';
+                cropSelection.style.width = newWidth + 'px';
+                cropSelection.style.height = newHeight + 'px';
+            });
+            
+            // 鼠标释放
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                dragType = '';
+            });
+        }
+
+        // 旋转图片
+        function rotateCropImage() {
+            const cropImage = document.getElementById('cropImage');
+            cropData.rotation = (cropData.rotation + 90) % 360;
+            cropImage.style.transform = `rotate(${cropData.rotation}deg)`;
+            
+            // 重新初始化选择框
+            setTimeout(() => {
+                initCropSelection();
+            }, 100);
+        }
+
+        // 重新拍照
+        function retakePhoto() {
+            cancelCrop();
+            setTimeout(() => {
+                openCameraPage();
+            }, 300);
+        }
+
+        // 取消裁剪
+        function cancelCrop() {
+            document.getElementById('cropPage').classList.remove('active');
+            originalImage = null;
+        }
+
+        // 完成裁剪
+        function finishCrop() {
+            const cropImage = document.getElementById('cropImage');
+            const cropSelection = document.getElementById('cropSelection');
+            const cropContainer = document.getElementById('cropContainer');
+            
+            // 获取裁剪区域相对于图片的位置和尺寸
+            const imageRect = cropImage.getBoundingClientRect();
+            const selectionRect = cropSelection.getBoundingClientRect();
+            const containerRect = cropContainer.getBoundingClientRect();
+            
+            // 计算裁剪参数
+            const scaleX = cropImage.naturalWidth / imageRect.width;
+            const scaleY = cropImage.naturalHeight / imageRect.height;
+            
+            const cropX = (selectionRect.left - imageRect.left) * scaleX;
+            const cropY = (selectionRect.top - imageRect.top) * scaleY;
+            const cropWidth = selectionRect.width * scaleX;
+            const cropHeight = selectionRect.height * scaleY;
+            
+            // 创建canvas进行裁剪
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = cropWidth;
+            canvas.height = cropHeight;
+            
+            const img = new Image();
+            img.onload = () => {
+                // 应用旋转
+                if (cropData.rotation !== 0) {
+                    const centerX = canvas.width / 2;
+                    const centerY = canvas.height / 2;
+                    ctx.translate(centerX, centerY);
+                    ctx.rotate((cropData.rotation * Math.PI) / 180);
+                    ctx.translate(-centerX, -centerY);
+                }
+                
+                // 绘制裁剪后的图片
+                ctx.drawImage(img, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+                
+                // 更新原图为裁剪后的图片
+                originalImage = canvas.toDataURL('image/jpeg', 0.9);
+                
+                // 关闭裁剪页面
+                document.getElementById('cropPage').classList.remove('active');
+                
+                // 开始处理
+                setTimeout(() => {
+                    startProcessing();
+                }, 300);
+            };
+            img.src = originalImage;
+        }
+
+        // 通知机制
+        function triggerNotification() {
+            // 显示Action Bar红点
+            const actionBarBadge = document.getElementById('actionBarBadge');
+            actionBarBadge.classList.add('show');
+            
+            // 显示小耕气泡提示
+            const headerNotification = document.getElementById('headerNotification');
+            headerNotification.classList.add('show');
+            
+            // 保存通知状态
+            localStorage.setItem(STORAGE_KEYS.NOTIFICATION_STATE, 'true');
+        }
+
+        // 清除通知
+        function clearNotifications() {
+            const actionBarBadge = document.getElementById('actionBarBadge');
+            const headerNotification = document.getElementById('headerNotification');
+            
+            actionBarBadge.classList.remove('show');
+            headerNotification.classList.remove('show');
+            
+            // 清除通知状态
+            localStorage.removeItem(STORAGE_KEYS.NOTIFICATION_STATE);
+        }
+
+        // 打开上传并清除通知
+        function openUploadWithNotificationClear() {
+            clearNotifications();
+            openUpload();
+        }
+
+        // 打开设置页面
+        function openSettings() {
+            clearNotifications();
+            showToast('设置页面开发中...');
+        }
+
+        // 聊天历史管理
+        function saveChatHistory() {
+            const chatArea = document.getElementById('chatArea');
+            const messages = Array.from(chatArea.children).map(msg => msg.outerHTML);
+            localStorage.setItem(STORAGE_KEYS.CHAT_HISTORY, JSON.stringify(messages));
+        }
+
+        function loadChatHistory() {
+            const savedHistory = localStorage.getItem(STORAGE_KEYS.CHAT_HISTORY);
+            if (savedHistory) {
+                const messages = JSON.parse(savedHistory);
+                const chatArea = document.getElementById('chatArea');
+                
+                // 清空当前聊天区域（保留欢迎消息）
+                const welcomeMsg = chatArea.querySelector('.message.ai');
+                chatArea.innerHTML = '';
+                if (welcomeMsg) {
+                    chatArea.appendChild(welcomeMsg);
+                }
+                
+                // 恢复历史消息
+                messages.forEach(msgHtml => {
+                    const msgElement = document.createElement('div');
+                    msgElement.innerHTML = msgHtml;
+                    chatArea.appendChild(msgElement.firstChild);
+                });
+                
+                // 重新绑定事件
+                rebindEvents();
+                
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }
+        }
+
+        // 重新绑定事件
+        function rebindEvents() {
+            // 重新绑定照片点击事件
+            const photoResults = document.querySelectorAll('.photo-result');
+            photoResults.forEach(photo => {
+                photo.addEventListener('click', openComparison);
+            });
+        }
+
+        // 检查处理状态
+        function checkProcessingStatus() {
+            const processingData = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROCESSING_STATE) || '{}');
+            const notificationState = localStorage.getItem(STORAGE_KEYS.NOTIFICATION_STATE);
+            
+            if (processingData.status === PROCESSING_STATUS.PROCESSING) {
+                // 继续处理
+                originalImage = processingData.originalImage;
+                
+                // 模拟处理完成
+                setTimeout(() => {
+                    showResult();
+                }, 2000);
+            } else if (processingData.status === PROCESSING_STATUS.COMPLETED) {
+                // 恢复完成状态
+                originalImage = processingData.originalImage;
+                processedImage = processingData.processedImage;
+                
+                // 如果有通知状态，显示通知
+                if (notificationState === 'true') {
+                    triggerNotification();
+                }
+            }
+            
+            // 加载聊天历史
+            loadChatHistory();
+        }
+
+        // 页面加载完成后检查状态
+        window.addEventListener('load', () => {
+            checkProcessingStatus();
+        });
     </script>
 </body>
 </html>
