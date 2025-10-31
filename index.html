@@ -1758,24 +1758,49 @@
         // 创建演示动画
         function createDemoAnimation() {
             const canvas = document.getElementById('demoCanvas');
+            if (!canvas) return;
+            
             const ctx = canvas.getContext('2d');
+            canvas.width = 600;
+            canvas.height = 400;
             
-            // 设置canvas尺寸
-            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
-            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            let frame = 0;
             
-            // 绘制演示内容
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-            ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
+            function draw() {
+                const progress = (Math.sin(frame / 30) + 1) / 2;
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // 修复前（左侧）
+                ctx.save();
+                ctx.filter = 'blur(5px) grayscale(0.5) brightness(0.7)';
+                ctx.fillStyle = '#8B7355';
+                ctx.fillRect(0, 0, canvas.width * (1 - progress), canvas.height);
+                ctx.restore();
+                
+                // 修复后（右侧）
+                const gradient = ctx.createLinearGradient(
+                    canvas.width * (1 - progress), 0,
+                    canvas.width, 0
+                );
+                gradient.addColorStop(0, '#D4A574');
+                gradient.addColorStop(1, '#F5DEB3');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(canvas.width * (1 - progress), 0, canvas.width * progress, canvas.height);
+                
+                // 分隔线
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(canvas.width * (1 - progress), 0);
+                ctx.lineTo(canvas.width * (1 - progress), canvas.height);
+                ctx.stroke();
+                
+                frame++;
+                requestAnimationFrame(draw);
+            }
             
-            const centerX = canvas.offsetWidth / 2;
-            const centerY = canvas.offsetHeight / 2;
-            
-            ctx.fillText('📸 选择一张老照片', centerX, centerY - 20);
-            ctx.fillText('✨ 小耕帮你变清晰', centerX, centerY + 20);
+            draw();
         }
 
         // 拍照相关功能
